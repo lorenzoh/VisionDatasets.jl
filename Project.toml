@@ -1,0 +1,12 @@
+name = "VisionDatasets"
+uuid = "0b850df3-8d91-418f-bd45-bcccebc5e565"
+authors = ["lorenzoh <lorenz.ohly@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
+ImageShow = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
+LearnBase = "7f8f8fb0-2700-5f03-b4bd-41f8cfc144b6"
