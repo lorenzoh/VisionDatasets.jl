@@ -50,8 +50,8 @@ A sample of a `ClassificationDataset` is a `Dict` with the following keys:
 #### Available classification datasets
 
 - [ImageWoof](https://github.com/fastai/imagenette)
-    - ImageWoof2 (160px)
-    - ImageWoof2 (320px)
+    - ImageWoof2 (160px): `ImageWoof.ImageWoof2_160`
+    - ImageWoof2 (320px): `ImageWoof.ImageWoof2_320`
 - [ImageNette](https://github.com/fastai/imagenette)
-    - ImageNette2 (160 px)
-    - ImageNette2 (320 px)
+    - ImageNette2 (160 px): `ImageNette.ImageNette2_160`
+    - ImageNette2 (320 px): `ImageNette.ImageNette2_320`
