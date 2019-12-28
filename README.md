@@ -45,7 +45,7 @@ A sample of a `ClassificationDataset` is a `Dict` with the following keys:
 
 - `:image`: The image
 - `:label`: the sample's label id, from 1 to number of classes; check `dataset.names` to access to corresponding label names
-- `:split`: dataset split the sample is part of, e.g. `:train` or `:val`
+- `:split`: dataset split the sample it is part of, e.g. `:train` or `:val`
 
 #### Available classification datasets
 
