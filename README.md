@@ -55,3 +55,11 @@ A sample of a `ClassificationDataset` is a `Dict` with the following keys:
 - [ImageNette](https://github.com/fastai/imagenette)
     - ImageNette2 (160 px): `ImageNette.ImageNette2_160`
     - ImageNette2 (320 px): `ImageNette.ImageNette2_320`
+
+
+
+### Pose estimation
+
+#### Available pose estimation datasets
+
+- [MPII]: `MPII.mpii()`
