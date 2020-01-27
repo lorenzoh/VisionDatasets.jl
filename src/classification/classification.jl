@@ -1,4 +1,3 @@
-import LearnBase: getobs, nobs
 using FileIO: load
 
 struct ClassificationDataset
