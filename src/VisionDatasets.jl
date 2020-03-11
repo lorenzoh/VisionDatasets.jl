@@ -7,9 +7,14 @@ include("./classification/ImageNette.jl")
 include("./classification/ImageWoof.jl")
 
 include("./poseestimation/poseestimation.jl")
+include("./poseestimation/utils.jl")
+include("./poseestimation/COCO.jl")
 include("./poseestimation/MPII.jl")
 
 export
+    getobs,
+    nobs,
+
     # classification
     ClassificationDataset,
     ImageNette,
@@ -17,6 +22,7 @@ export
 
     # pose estimation
     PoseDataset,
+    COCO,
     MPII
 
 end # module

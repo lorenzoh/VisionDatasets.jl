@@ -4,7 +4,7 @@ using DataDeps
 using JSON3
 using PoseEstimation: Joint, PoseConfig
 
-using ..VisionDatasets: PoseDataset
+using ..VisionDatasets: PoseDataset, groupby
 
 
 function __init__()
@@ -78,8 +78,6 @@ function mpii(imgpath = datadep"mpii_images", annpath = datadep"mpii_annotations
     trainanns = open(JSON3.read, joinpath(annpath, "mpiitrain.json"))
     validanns = open(JSON3.read, joinpath(annpath, "mpiivalid.json"))
 
-    splits = [repeat([:train], length(trainanns)); repeat([:valid], length(validanns))]
-
     traindict = groupby(trainanns, :image)
     validdict = groupby(validanns, :image)
 
@@ -95,26 +93,18 @@ function mpii(imgpath = datadep"mpii_images", annpath = datadep"mpii_annotations
     return PoseDataset(
         [path for (path, _) in anns],
         [parseannotation(ann) for (_, ann) in anns],
-        MPII.CONFIG,
+        CONFIG,
         imgpath,
         Dict(
-            :split => [splitdict[path] for (path, _) in anns]
+            :split => [splitdict[path] for (path, _) in anns],
+            :stats => Dict(
+                :means => [0.46339586534149074, 0.44807951561830006, 0.41191946181562883],
+                :stds => [0.2353513819415526, 0.2328964398675012, 0.23061464879094382],
+            ),
         )
     )
 end
 
-
-function groupby(xs, field)
-    d = Dict()
-    for x in xs
-        f = getindex(x, field)
-        if !haskey(d, f)
-            d[f] = []
-        end
-        push!(d[f], x)
-    end
-    return d
-end
 
 
 function parsejoint(j)::Union{Nothing, <:Tuple}
