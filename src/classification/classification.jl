@@ -3,13 +3,13 @@ using FileIO: load
 struct ClassificationDataset
     dir::AbstractString
     files::AbstractVector{AbstractString}
-    labels::AbstractVector{Integer}
+    labels::AbstractVector{Int}
     names::AbstractVector{AbstractString}
     data::Dict
 end
 
 
-function getobs(ds::ClassificationDataset, idx::Integer)
+function getobs(ds::ClassificationDataset, idx::Int)
     return Dict(
         :image => load(joinpath(ds.dir, ds.files[idx])),
         :label => ds.labels[idx],
@@ -38,7 +38,7 @@ function load_classification_dataset(dir::AbstractString)
     name_to_id = Dict(zip(names, classids))
 
     files = String[]
-    ids = Integer[]
+    ids = Int[]
     splits = Symbol[]
 
     for split in readdir(dir)

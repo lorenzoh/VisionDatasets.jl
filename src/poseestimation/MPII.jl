@@ -95,6 +95,7 @@ function mpii(imgpath = datadep"mpii_images", annpath = datadep"mpii_annotations
         [parseannotation(ann) for (_, ann) in anns],
         CONFIG,
         imgpath,
+        Dict(),
         Dict(
             :split => [splitdict[path] for (path, _) in anns],
             :stats => Dict(
@@ -109,7 +110,7 @@ end
 
 function parsejoint(j)::Union{Nothing, <:Tuple}
     x, y = j
-    return (y, x) == (-1, -1) ? nothing : (y, x)
+    return (y, x) == (-1, -1) ? nothing : (y+1, x+1)
 end
 
 function parseannotation(ann)::AbstractMatrix{Joint}

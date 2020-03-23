@@ -39,27 +39,31 @@ Dict(:image => ..., :label => ..., ...)
 
 ## Datasets
 
-### Classification 
+### Classification
 
 A sample of a `ClassificationDataset` is a `Dict` with the following keys:
 
-- `:image`: The image
+- `:image`
 - `:label`: the sample's label id, from 1 to number of classes; check `dataset.names` to access to corresponding label names
-- `:split`: dataset split the sample it is part of, e.g. `:train` or `:val`
 
 #### Available classification datasets
 
 - [ImageWoof](https://github.com/fastai/imagenette)
-    - ImageWoof2 (160px): `ImageWoof.ImageWoof2_160`
-    - ImageWoof2 (320px): `ImageWoof.ImageWoof2_320`
+  - ImageWoof2 (160px): `ImageWoof.ImageWoof2_160`
+  - ImageWoof2 (320px): `ImageWoof.ImageWoof2_320`
 - [ImageNette](https://github.com/fastai/imagenette)
-    - ImageNette2 (160 px): `ImageNette.ImageNette2_160`
-    - ImageNette2 (320 px): `ImageNette.ImageNette2_320`
-
-
+  - ImageNette2 (160 px): `ImageNette.ImageNette2_160`
+  - ImageNette2 (320 px): `ImageNette.ImageNette2_320`
 
 ### Pose estimation
 
+A sample of a `ClassificationDataset` is a `Dict` with the following keys:
+
+- `:image`
+- `:poses`
+- `:config`: The `PoseEstimation.PoseConfig` of the dataset
+
 #### Available pose estimation datasets
 
-- [MPII]: `MPII.mpii()`
+- [MPII]: `MPII.mpii(imagespath)`
+- [MPII]: `COCO.coco_keypoints(imagespath)`

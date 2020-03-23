@@ -95,24 +95,27 @@ function coco_keypoints(imagespath, annotationpath = datadep"coco_keypoint_annot
     end
 
     anns = merge(traindict, validdict)
+
     return PoseDataset(
         [imagefiledict[image_id] for (image_id, _) in anns],
-        [parseannotation(ann) for (_, ann) in anns],
+        [parseposes(ann) for (_, ann) in anns],
         CONFIG,
         imagespath,
+        Dict(
+            :missingbboxes => [parsemissingboxes(ann) for (_, ann) in anns]
+        ),
         Dict(
             :split => [splitdict[path] for (path, _) in anns],
             :stats => Dict(
                 :means => [0.46339586534149074, 0.44807951561830006, 0.41191946181562883],
                 :stds => [0.2353513819415526, 0.2328964398675012, 0.23061464879094382],
             ),
-            # TODO: include extra data for missing annotations so that they can be masked out when computing loss
         )
     )
 end
 
 
-function parseannotation(ann)
+function parseposes(ann)
     return vcat([reshape(parsekeypoints(a.keypoints), 1, :) for a in ann]...)
 end
 
@@ -120,7 +123,17 @@ function parsekeypoints(keypoints)::Vector{Joint}
     xs = keypoints[1:3:end]
     ys = keypoints[2:3:end]
     ids = keypoints[3:3:end];
-    return [id == 0 ? nothing : (y, x) for (x, y, id) in zip(xs, ys, ids)]
+    return [id == 0 ? nothing : (y+1, x+1) for (x, y, id) in zip(xs, ys, ids)]
+end
+
+
+function parsemissingboxes(ann)::Vector{}
+    return boxes = [parsebbox(a.bbox) for a in ann if a.num_keypoints == 0]
+end
+
+function parsebbox(cocobbox)::Tuple{Tuple{Float32, Float32}, Tuple{Float32, Float32}}
+    x, y, w, h = cocobbox
+    return ((y+1, x+1), (y + h, x + w))
 end
 
 end # module
