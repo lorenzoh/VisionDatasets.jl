@@ -3,6 +3,7 @@ module MPII
 using DataDeps
 using JSON3
 using PoseEstimation: Joint, PoseConfig
+using StaticArrays: SVector
 
 using ..VisionDatasets: PoseDataset, groupby
 
@@ -108,12 +109,12 @@ end
 
 
 
-function parsejoint(j)::Union{Nothing, <:Tuple}
+function parsejoint(j)::Union{Nothing, SVector{2}}
     x, y = j
-    return (y, x) == (-1, -1) ? nothing : (y+1, x+1)
+    return (y, x) == (-1, -1) ? nothing : SVector{2}(y+1, x+1)
 end
 
-function parseannotation(ann)::AbstractMatrix{Joint}
+function parseannotation(ann)
     vcat([reshape(parsejoint.(p.joints), 1, :) for p in ann]...)
 end
 
