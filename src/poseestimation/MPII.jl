@@ -95,13 +95,14 @@ function mpii(imgpath = datadep"mpii_images", annpath = datadep"mpii_annotations
         [parseannotation(ann) for (_, ann) in anns],
         CONFIG,
         imgpath,
-        Dict(),
+        Dict(:missingbboxes => repeat([], length(anns))),
         Dict(
             :split => [splitdict[path] for (path, _) in anns],
             :stats => Dict(
                 :means => [0.46339586534149074, 0.44807951561830006, 0.41191946181562883],
                 :stds => [0.2353513819415526, 0.2328964398675012, 0.23061464879094382],
             ),
+
         )
     )
 end
