@@ -2,7 +2,7 @@ using PoseEstimation: PoseConfig, Joint
 
 struct PoseDataset
     files::AbstractVector{AbstractString}
-    poses::AbstractVector{AbstractMatrix{<:Joint}}
+    poses::Vector
     config::PoseConfig
     dir::AbstractString
     sampledata::Dict
