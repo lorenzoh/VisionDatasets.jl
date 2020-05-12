@@ -3,6 +3,7 @@ module COCO
 using DataDeps
 using JSON3
 using PoseEstimation: Joint, PoseConfig
+using StaticArrays
 
 using ..VisionDatasets: PoseDataset, groupby
 
@@ -98,7 +99,7 @@ function coco_keypoints(imagespath, annotationpath = datadep"coco_keypoint_annot
 
     return PoseDataset(
         [imagefiledict[image_id] for (image_id, _) in anns],
-        [parseposes(ann) for (_, ann) in anns],
+        [parseannposes(ann) for (_, ann) in anns],
         CONFIG,
         imagespath,
         Dict(
@@ -115,25 +116,36 @@ function coco_keypoints(imagespath, annotationpath = datadep"coco_keypoint_annot
 end
 
 
-function parseposes(ann)
-    return vcat([reshape(parsekeypoints(a.keypoints), 1, :) for a in ann]...)
+function parseannposes(ann)
+    kps::Vector{Vector{Int}} = collect(map(a -> collect(a.keypoints), filter(a -> a.num_keypoints > 0, ann)))
+    #kps = [a.keypoints for a in ann if a.num_keypoints > 0]
+    length(kps) > 0 || return []
+    nposes::Int = length(kps)
+    nkeypoints::Int = length(kps[1]) ÷ 3
+    poses = Array{Union{Nothing, SVector{2}}}(nothing, nposes, nkeypoints)
+
+    for (p, keypoints::Vector{Int}) in enumerate(kps)
+        xs = @view keypoints[1:3:end]
+        ys = @view keypoints[2:3:end]
+        ids = @view keypoints[3:3:end]
+        for (k, (x, y, id)) in enumerate(zip(xs, ys, ids))
+            if id != 0
+                poses[p, k] = SVector{2, Float32}(y + 1, x + 1)
+            end
+        end
+    end
+    return poses
 end
 
-function parsekeypoints(keypoints)::Vector{Joint}
-    xs = keypoints[1:3:end]
-    ys = keypoints[2:3:end]
-    ids = keypoints[3:3:end];
-    return [id == 0 ? nothing : (y+1, x+1) for (x, y, id) in zip(xs, ys, ids)]
+
+function parsemissingboxes(ann)
+    return boxes = vcat([parsebbox(a.bbox) for a in ann if a.num_keypoints == 0]...)
 end
 
 
-function parsemissingboxes(ann)::Vector{}
-    return boxes = [parsebbox(a.bbox) for a in ann if a.num_keypoints == 0]
-end
-
-function parsebbox(cocobbox)::Tuple{Tuple{Float32, Float32}, Tuple{Float32, Float32}}
+function parsebbox(cocobbox)
     x, y, w, h = cocobbox
-    return ((y+1, x+1), (y + h, x + w))
+    return reshape([SVector{2, Float32}(y+1, x+1), SVector{2, Float32}(y + h, x + w)], 1, :)
 end
 
 end # module
