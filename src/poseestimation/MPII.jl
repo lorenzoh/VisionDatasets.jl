@@ -96,7 +96,7 @@ function mpii(imgpath = datadep"mpii_images", annpath = datadep"mpii_annotations
         [parseannotation(ann) for (_, ann) in anns],
         CONFIG,
         imgpath,
-        Dict(:missingbboxes => repeat([], length(anns))),
+        Dict(:missingbboxes => [[] for _ in 1:length(anns)]),
         Dict(
             :split => [splitdict[path] for (path, _) in anns],
             :stats => Dict(

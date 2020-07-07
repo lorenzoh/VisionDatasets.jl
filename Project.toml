@@ -4,12 +4,13 @@ authors = ["lorenzoh <lorenz.ohly@gmail.com>"]
 version = "0.1.0"
 
 [deps]
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
+Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 JuliaDB = "a93385a2-3734-596a-9a66-3cfbb77141e6"
 LearnBase = "7f8f8fb0-2700-5f03-b4bd-41f8cfc144b6"
+MAT = "23992714-dd62-5051-b70f-ba57cb901cac"
 PoseEstimation = "fe339255-2233-4ea8-a3fb-f10bea2fa631"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"

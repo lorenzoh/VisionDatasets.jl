@@ -10,6 +10,7 @@ include("./poseestimation/poseestimation.jl")
 include("./poseestimation/utils.jl")
 include("./poseestimation/COCO.jl")
 include("./poseestimation/MPII.jl")
+include("./poseestimation/MPI_INF_3DHP.jl")
 
 export
     getobs,
@@ -23,6 +24,7 @@ export
     # pose estimation
     PoseDataset,
     COCO,
-    MPII
+    MPII,
+    MPI_INF_3DHP
 
 end # module

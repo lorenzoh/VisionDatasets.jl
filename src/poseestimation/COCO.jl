@@ -5,7 +5,7 @@ using JSON3
 using JuliaDB
 using Images
 using LearnBase
-using PoseEstimation: Joint, PoseConfig
+using PoseEstimation: PoseConfig
 using StaticArrays
 
 using ..VisionDatasets: PoseDataset, groupby
@@ -77,7 +77,7 @@ const STDS = SVector(0.2353513819415526, 0.2328964398675012, 0.23061464879094382
 
 struct COCOKeypoints
     imagefolder
-    t::IndexedTable
+    table::IndexedTable
     COCOKeypoints(imagefolder) = new(
         imagefolder,
         JuliaDB.load(joinpath(datadep"coco_keypoint_annotations", "coco.jdb")))
@@ -85,17 +85,17 @@ end
 
 
 function LearnBase.getobs(ds::COCOKeypoints, idx)
-    annotation = ds.t[idx]
+    annotation = ds.table[idx]
     image = Images.load(
-        getimagefile(ds.imagefolder, annotation.image_id, annotation.isvalid))
+        getimagepath(ds.imagefolder, annotation.image_id, annotation.isvalid))
 
     return (image = image, pose = annotation.keypoints, config = CONFIG)
 end
 
-LearnBase.nobs(ds::COCOKeypoints) = length(ds.t)
+LearnBase.nobs(ds::COCOKeypoints) = length(ds.table)
 
 
-getimagefile(folder, image_id, isvalid) = joinpath(
+getimagepath(folder, image_id, isvalid) = joinpath(
     folder,
     isvalid ? "val2017" : "train2017",
     "$(lpad(image_id, 12, "0")).jpg"
@@ -111,7 +111,7 @@ function preparecoco(annotationsfolder)
     validannot = JSON3.read(read(validannspath))
 
     t = makecocotable(trainannot.annotations, validannot.annotations)
-    save(t, joinpath(annotationsfolder, "coco.jdb"))
+    JuliaDB.save(t, joinpath(annotationsfolder, "coco.jdb"))
     return t
 end
 
@@ -131,13 +131,13 @@ function annotationtable(annotations; isvalid = false)
     data[:keypoints] = parsekeypoints.(data[:keypoints])
     data[:isvalid] = fill(isvalid, length(data[:num_keypoints]))
 
-    t = table(data, pkey = :image_id)
+    t = table(data, pkey = (:id, :image_id))
     return t
 end
 
 
 function parsebbox(bbox)
-    y, x, h, w = bbox
+    x, y, w, h = bbox
     return [SVector{2,Float32}(y + 1, x + 1), SVector{2,Float32}(y + h, x + w)]
 end
 
