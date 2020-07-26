@@ -454,9 +454,9 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[Lz4_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "e1a93171a400d4578193eaa39edd2d3f5db08fb6"
+git-tree-sha1 = "51b1db0732bbdcfabb60e36095cc3ed9c0016932"
 uuid = "5ced341a-0733-55b8-9ab6-a4889d929147"
-version = "1.9.2+0"
+version = "1.9.2+2"
 
 [[MAT]]
 deps = ["BufferedStreams", "CodecZlib", "HDF5", "SparseArrays"]
@@ -493,9 +493,9 @@ version = "1.0.2"
 
 [[MbedTLS_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "f85473aeb7a2561a5c58c06c4868971ebe2bcbff"
+git-tree-sha1 = "a0cb0d489819fa7ea5f9fa84c7e7eba19d8073af"
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
-version = "2.16.6+0"
+version = "2.16.6+1"
 
 [[MemPool]]
 deps = ["DataStructures", "Distributed", "Mmap", "Random", "Serialization", "Sockets"]

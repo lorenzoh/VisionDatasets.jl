@@ -11,6 +11,7 @@ include("./poseestimation/utils.jl")
 include("./poseestimation/COCO.jl")
 include("./poseestimation/MPII.jl")
 include("./poseestimation/MPI_INF_3DHP.jl")
+include("./poseestimation/MPI_3DPW.jl")
 
 export
     getobs,
@@ -25,6 +26,7 @@ export
     PoseDataset,
     COCO,
     MPII,
-    MPI_INF_3DHP
+    MPI_INF_3DHP,
+    MPI_3DPW
 
 end # module

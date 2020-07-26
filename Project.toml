@@ -4,6 +4,7 @@ authors = ["lorenzoh <lorenz.ohly@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
 DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
