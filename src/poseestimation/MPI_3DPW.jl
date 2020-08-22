@@ -15,8 +15,10 @@ using Glob
 using CoordinateTransformations
 using PoseEstimation
 using Images
-import LearnBase: getobs, nobs
+using LearnBase
+using LearnBase: getobs, nobs
 using PyCall
+using Parameters
 const pickle = pyimport("pickle")
 const py = PyCall.builtin
 using StaticArrays
@@ -78,28 +80,106 @@ CONFIG = PoseConfig(
     ]
 )
 
-# Transformation for 2D coordinate system
-FIX2D = LinearMap(SMatrix{2, 2}([0 1; 1 0]))
-FIX3D = LinearMap(SMatrix{3, 3}(
-    [0  0 -1;
-     1  0  0;
-     0  -1  0]
-    ))
 
-
-struct MPI3DPWDataset
+@with_kw struct MPI3DPWDataset
     sequences
     imagefolder
 end
 
 function MPI3DPWDataset(seqfolder::AbstractString, imagefolder::AbstractString)
-
     return MPI3DPWDataset(
         [loadsequence(path) for path in glob("*.pkl", seqfolder)],
         imagefolder
     )
 end
 
+
+
+nframes(sequence) = size(sequence["cam_poses"], 1)
+nactors(sequence) = length(sequence["poses"])
+nsamples(sequence) = nactors(sequence) * nframes(sequence)
+
+
+LearnBase.nobs(ds::MPI_3DPW.MPI3DPWDataset) = sum(nsamples(seq) for seq in ds.sequences)
+
+function LearnBase.getobs(ds::MPI_3DPW.MPI3DPWDataset, idx::Int)
+    seqidx, actoridx, frameidx = _findindex(ds.sequences, idx)
+    return LearnBase.getobs(ds, seqidx, actoridx, frameidx)
+end
+
+
+function LearnBase.getobs(ds::MPI_3DPW.MPI3DPWDataset, seqidx, actoridx, frameidx)
+    seq = ds.sequences[seqidx]
+    return (
+        img_frame_id = seq["img_frame_ids"][frameidx],
+        cam_intrinsics = seq["cam_intrinsics"],
+        v_template_clothed = seq["v_template_clothed"][actoridx],
+        betas = seq["betas"][actoridx],
+        campose_valid = Bool(seq["campose_valid"][actoridx][frameidx]),
+        trans = view(seq["trans"][actoridx], frameidx, :),
+        #=
+        trans_60Hz = view(
+            seq["trans_60Hz"][actoridx],
+            2frameidx-1:2frameidx, :
+        ),
+        =#
+        pose = view(seq["poses"][actoridx], frameidx, :),
+        gender = seq["genders"][actoridx],
+        sequence = seq["sequence"],
+        pose2d = view(seq["poses2d"][actoridx], frameidx, :, :),
+        betas_clothed = seq["betas_clothed"][actoridx],
+        jointPositions = reinterpret(
+            SVector{3, Float64},
+            view(seq["jointPositions"][actoridx], frameidx, :)),
+        cam_pose = view(seq["cam_poses"], frameidx, :, :),
+        #=
+        poses_60Hz = view(
+            seq["poses_60Hz"][actoridx],
+            2frameidx-1:2frameidx, :
+        ),
+        =#
+        imagepath = imagepath(ds.imagefolder, seq["sequence"], frameidx),
+    )
+end
+
+
+## IO
+
+
+function loadsequence(file)
+    pickle = pyimport("pickle")
+    return pickle.load(PyCall.builtin.open(file, "rb"), encoding = "bytes")
+end
+
+imagepath(folder, seqname, frame) = joinpath(
+    folder, seqname, "image_$(lpad(string(frame), 5, '0')).jpg")
+
+## Utils
+
+
+function _findindex(sequences, idx)
+    idx -= 1
+    seqidx = 0
+    while idx >= (n = nsamples(sequences[seqidx+1]))
+        idx -= n
+        seqidx += 1
+    end
+    nf = nframes(sequences[seqidx+1])
+    actoridx = idx ÷ nf
+    frameidx = idx % nf
+    return seqidx + 1, actoridx + 1, frameidx + 1
+end
+
+#=
+
+# Transformation for 2D coordinate system: (x, y) -> (y, x)
+FIX2D = LinearMap(SMatrix{2, 2}([0 1; 1 0]))
+# Transformation for 3D coordinate system: (-z, x, -y) -> (y, x, z)
+FIX3D = LinearMap(SMatrix{3, 3}(
+    [0  0 -1;
+     1  0  0;
+     0  -1  0]
+))
 
 # parsing
 
@@ -183,5 +263,7 @@ function fromhom(X::SVector{4})
 end
 
 stack(xs) = vcat(reshape.(xs, 1, :)...)
+
+=#
 
 end
