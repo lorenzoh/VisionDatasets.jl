@@ -75,16 +75,16 @@ const MEANS = SVector(0.46339586534149074, 0.44807951561830006, 0.41191946181562
 const STDS = SVector(0.2353513819415526, 0.2328964398675012, 0.23061464879094382)
 
 
-struct COCOKeypoints
+struct COCODataset
     imagefolder
     table::IndexedTable
-    COCOKeypoints(imagefolder) = new(
+    COCODataset(imagefolder) = new(
         imagefolder,
         JuliaDB.load(joinpath(datadep"coco_keypoint_annotations", "coco.jdb")))
 end
 
 
-function LearnBase.getobs(ds::COCOKeypoints, idx)
+function LearnBase.getobs(ds::COCODataset, idx)
     annotation = ds.table[idx]
     image = Images.load(
         getimagepath(ds.imagefolder, annotation.image_id, annotation.isvalid))
@@ -92,7 +92,7 @@ function LearnBase.getobs(ds::COCOKeypoints, idx)
     return (image = image, pose = annotation.keypoints, config = CONFIG)
 end
 
-LearnBase.nobs(ds::COCOKeypoints) = length(ds.table)
+LearnBase.nobs(ds::COCODataset) = length(ds.table)
 
 
 getimagepath(folder, image_id, isvalid) = joinpath(
