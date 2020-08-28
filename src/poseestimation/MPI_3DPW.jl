@@ -117,12 +117,6 @@ function LearnBase.getobs(ds::MPI_3DPW.MPI3DPWDataset, seqidx, actoridx, frameid
         betas = seq["betas"][actoridx],
         campose_valid = Bool(seq["campose_valid"][actoridx][frameidx]),
         trans = view(seq["trans"][actoridx], frameidx, :),
-        #=
-        trans_60Hz = view(
-            seq["trans_60Hz"][actoridx],
-            2frameidx-1:2frameidx, :
-        ),
-        =#
         pose = view(seq["poses"][actoridx], frameidx, :),
         gender = seq["genders"][actoridx],
         sequence = seq["sequence"],
@@ -132,12 +126,6 @@ function LearnBase.getobs(ds::MPI_3DPW.MPI3DPWDataset, seqidx, actoridx, frameid
             SVector{3, Float64},
             view(seq["jointPositions"][actoridx], frameidx, :)),
         cam_pose = view(seq["cam_poses"], frameidx, :, :),
-        #=
-        poses_60Hz = view(
-            seq["poses_60Hz"][actoridx],
-            2frameidx-1:2frameidx, :
-        ),
-        =#
         imagepath = imagepath(ds.imagefolder, seq["sequence"], frameidx),
     )
 end
